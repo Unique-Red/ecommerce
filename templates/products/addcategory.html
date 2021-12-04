@@ -1,0 +1,14 @@
+{% extends "admin/index.html" %}
+{% block title %}
+Add brand
+{% endblock %}
+{% block content %}
+<div class="container" align="center">
+    {% include '_messages.html' %}
+    <div class="text-center h1">Add a Category</div>
+    <form action="" method="POST">
+        <input type="text" name="category" class="form-control">
+        <input type="submit" value="Add category" class="btn btn-outline-info mt-2">
+    </form>
+</div>
+{% endblock %}

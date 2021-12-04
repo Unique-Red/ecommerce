@@ -1,0 +1,14 @@
+{% extends "admin/index.html" %}
+{% block title %}
+Update brand
+{% endblock %}
+{% block content %}
+<div class="container" align="center">
+    {% include '_messages.html' %}
+    <div class="text-center h1">Update the Brand</div>
+    <form action="" method="POST">
+        <input type="text" name="brand" class="form-control" value="{{update_brand.name}}">
+        <input type="submit" value="Update brand" class="btn btn-outline-info mt-2">
+    </form>
+</div>
+{% endblock %}
