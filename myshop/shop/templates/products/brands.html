@@ -1,0 +1,55 @@
+{% extends "products/index.html" %}
+{% block title %}
+Brand
+{% endblock %}
+{% block content %}
+<div class="container">
+    {% if brand %}
+      <div class="row">
+          {% for b in brand%}
+          <div class="col-md-3 mt-3">
+              <div class="card">
+                  <img src="{{url_for('static', filename='uploads/' + b.image_1)}}" alt="{{b.name}}" class="card-img-top" height="200">
+                  <div class="card-body">
+                      {% if b.discount > 0 %}
+                      <p style="color: green;">{{ b.discount}}% discount</p>
+                      {% endif %}
+                      <h5 class="text-center">{{b.name}}</h5>
+                      <p class="text-center">Price: #{{b.price}}</p>
+                  </div>
+                  <div class="card-footer">
+                      <a href="#" class="float-left btn btn-sm btn-outline-primary">Details</a> <a href="#" class="float-right btn btn-sm btn-outline-warning">Add to cart</a>
+                  </div>
+              </div>
+          </div>
+          {% endfor %}
+  
+          {% else %}
+          <div class="container">
+              <div class="row">
+                {% for product in products%}
+                <div class="col-md-3 mt-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <img src="{{url_for('static', filename='uploads/' + product.image_1)}}" alt="{{product.name}}" class="card-img-top" height="200">
+                            <div align="center" class="card-img-overlay mt-5">
+                                {% if product.discount > 0 %}
+                                <p style="color: whitesmoke; font-weight: 500; text-shadow: 0 0 3px white, 0 0 5px grey;">{{ product.discount}}% discount</p>
+                                {% endif %}
+                            </div>
+                            <h5 class="text-center">{{product.name}}</h5>
+                            <p class="text-center">Price: #{{product.price}}</p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="#" class="float-left btn btn-sm btn-outline-primary">Details</a> <a href="#" class="float-right btn btn-sm btn-outline-warning">Add to cart</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+              </div>
+          </div>
+          
+      </div>
+    {% endif %}
+  </div>
+  {% endblock %}

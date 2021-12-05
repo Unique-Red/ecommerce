@@ -1,0 +1,49 @@
+{% extends "products/index.html" %}
+{% block title %}
+Category
+{% endblock %}
+{% block content %}
+<div class="container">
+    {% if get_category_product %}
+      <div class="row">
+          {% for c in category %}
+          <div class="col-md-3 mt-3">
+              <div class="card">
+                  <img src="{{url_for('static', filename='uploads/' + c.image_1)}}" alt="{{c.name}}" class="card-img-top" height="200">
+                  <div class="card-body">
+                      {% if b.discount > 0 %}
+                      <p style="color: green;">{{ c.discount}}% discount</p>
+                      {% endif %}
+                      <h5 class="text-center">{{c.name}}</h5>
+                      <p class="text-center">Price: #{{c.price}}</p>
+                  </div>
+                  <div class="card-footer">
+                      <a href="#" class="float-left btn btn-sm btn-outline-primary">Details</a> <a href="#" class="float-right btn btn-sm btn-outline-warning">Add to cart</a>
+                  </div>
+              </div>
+          </div>
+          {% endfor %}
+  
+          {% else %}
+          
+          {% for product in products%}
+          <div class="col-md-3 mt-3">
+              <div class="card">
+                  <img src="{{url_for('static', filename='uploads/' + product.image_1)}}" alt="{{product.name}}" class="card-img-top" height="200">
+                  <div class="card-body">
+                      {% if product.discount > 0 %}
+                      <p style="color: green;">{{ product.discount}}% discount</p>
+                      {% endif %}
+                      <h5 class="text-center">{{product.name}}</h5>
+                      <p class="text-center">Price: #{{product.price}}</p>
+                  </div>
+                  <div class="card-footer">
+                      <a href="#" class="float-left btn btn-sm btn-outline-primary">Details</a> <a href="#" class="float-right btn btn-sm btn-outline-warning">Add to cart</a>
+                  </div>
+              </div>
+          </div>
+          {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+  {% endblock %}
