@@ -1,0 +1,52 @@
+{% extends "products/index.html" %}
+{% block title %}
+All Products
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row">
+      {% for product in products.items %}
+      <div class="col-md-3 mt-3">
+          <div class="card">
+              <div class="card-body">
+                  <img src="{{url_for('static', filename='uploads/' + product.image_1)}}" alt="{{product.name}}" class="card-img-top" height="200">
+                    {% if product.discount > 0 %}
+                    <p style="color: whitesmoke; font-weight: 500; text-shadow: 0 0 5px red; color: whitesmoke; position: absolute; top: 20%; left: 20%;">{{ product.discount}}% discount</p>
+                    {% endif %}
+                  <h5 class="text-center">{{product.name}}</h5>
+                  <p class="text-center">Price: #{{product.price}}</p>
+              </div>
+              <div class="card-footer">
+                  <a href="{{url_for('single_page', id= product.id)}}" class="float-left btn btn-sm btn-outline-primary">Details</a>
+                  <a href="#" class="float-right btn btn-sm btn-outline-warning">Add to cart</a>
+              </div>
+          </div>
+      </div>
+      {% endfor %}
+    </div>
+    <br>
+    <div class="row">
+        <div class="col text-center">
+            {% if products.has_prev %}
+            <a href="{{url_for('home', page=products.prev_num)}}" class="btn btn-info mt-5">Previous</a> 
+            {% endif %}
+                {% if products.total > 4 %}
+                    {% for page_num in products.iter_pages(left_edge=1, right_edge=2, left_current=1, right_current=2) %}
+                        {% if page_num %}
+                            {% if products.page == page_num %}
+                            <a href="{{url_for('home', page=page_num)}}" class="btn btn-outline-info mt-5">{{ page_num }}</a> 
+                            {% else %}
+                            <a href="{{url_for('home', page=page_num)}}" class="btn btn-info mt-5">{{ page_num }}</a> 
+                            {% endif %}
+                        {% else %}
+                        ... 
+                        {% endif%}              
+                    {% endfor %}
+                {% endif %}
+                {% if products.has_next %}
+                <a href="{{url_for('home', page=products.next_num)}}" class="btn btn-info mt-5">Next</a> 
+                {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

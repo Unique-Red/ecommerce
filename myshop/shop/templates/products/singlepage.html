@@ -1,0 +1,48 @@
+{% extends "products/index.html" %}
+{% block title %}
+{{ product.name }}
+{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6" id='b_image'>
+            <img src="{{url_for('static', filename='uploads/' + product.image_1)}}" alt="{{product.name}}" width="400" height="400">
+        </div>
+        <div class="col-md-6">
+            <br>
+            <h4> Product name: {{ product.name }}</h4>
+            <hr>
+            <p>Product price: #{{ product.price }}</p>
+            {% if product.discount > 0 %}
+            <p>{{ product.discount }}% discount</p>
+            {% endif %}
+            <b>Product Description</b>
+            <p>{{ product.description }}</p>
+            <a href="" class="btn btn-outline-warning"> Add to cart</a>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-12">
+            <img src="{{url_for('static', filename='uploads/' + product.image_1)}}" alt="" width="120" height="120">
+            <img src="{{url_for('static', filename='uploads/' + product.image_2)}}" alt="" width="120" height="120">
+            <img src="{{url_for('static', filename='uploads/' + product.image_3)}}" alt="" width="120" height="120">
+        </div>     
+    </div>
+</div>
+<!--I don't like JS but i don't think i have a choice now-->
+<script>
+    var b_image = document.getElementById('b_image');
+    var s_image = document.getElementById('s_image').getElementsByTagName('img');
+    for (var i = 0; i < s_image.length; i++){
+        s_image[i].addEventListener('click', full_image);
+    }
+
+    function full_image(){
+        var ImageSRC = this.getAttribute('src');
+        b_image.innerHTML ="<img src="+ImageSRC+" width='400' height='400'>";
+    }
+
+</script>
+<!--Well, it's not working sha. It was supposed display the smaller image but IIWII. Moving on-->
+{% endblock %}
