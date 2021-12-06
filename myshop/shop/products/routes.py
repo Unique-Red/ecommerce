@@ -1,7 +1,7 @@
-from itertools import product
-from sys import path
-from flask import render_template, session, request, redirect, url_for, flash
-from shop import app, db #,photos
+"""from itertools import product
+from sys import path"""
+from flask import render_template, session, request, redirect, url_for, flash, current_app
+from shop import app, db 
 from flask_login import login_required
 from .models import Brand, Category, Addproduct
 from .forms import Addproducts
@@ -9,6 +9,41 @@ import os
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
+
+
+@app.route("/")
+def home():
+    page = request.args.get("page", 1, type=int)
+    products = Addproduct.query.filter(Addproduct.stock > 0).order_by(Addproduct.id.desc()). paginate(page=page, per_page=4)
+    brands = Brand.query.join(Addproduct, (Brand.id == Addproduct.brand_id)).all()
+    categories = Category.query.join(Addproduct, (Category.id == Addproduct.category_id)).all()
+    return render_template("products/product.html", products=products, brands=brands, categories=categories)
+
+@app.route('/product/<int:id>')
+def single_page(id):
+    product = Addproduct.query.get_or_404(id)
+    brands = Brand.query.join(Addproduct, (Brand.id == Addproduct.brand_id)).all()
+    categories = Category.query.join(Addproduct, (Category.id == Addproduct.category_id)).all()
+    return render_template("products/singlepage.html", product=product, brands=brands, categories=categories)
+
+
+@app.route("/brand/<int:id>")
+def get_brand(id):
+    page = request.args.get("page", 1, type=int)
+    get_b = Brand.query.filter_by(id=id).first_or_404()
+    brand = Addproduct.query.filter_by(brand=get_b). paginate(page=page, per_page=4)
+    brands = Brand.query.join(Addproduct, (Brand.id == Addproduct.brand_id)).all()
+    categories = Category.query.join(Addproduct, (Category.id == Addproduct.category_id)).all()
+    return render_template("products/brands.html", brand=brand, brands=brands, categories=categories, get_b=get_b)
+
+@app.route("/categories/<int:id>")
+def get_category(id):
+    page = request.args.get("page", 1, type=int)
+    get_c = Category.query.filter_by(id=id).first_or_404()
+    brands = Brand.query.join(Addproduct, (Brand.id == Addproduct.brand_id)).all()
+    get_category_product = Addproduct.query.filter_by(category=get_c).paginate(page=page, per_page=4)
+    categories = Category.query.join(Addproduct, (Category.id == Addproduct.category_id)).all()
+    return render_template('products/category.html', get_category_product=get_category_product, categories=categories, brands=brands, get_c=get_c)
 
 @app.route("/addbrand", methods=['GET','POST'])
 @login_required
@@ -27,9 +62,6 @@ def add_brand():
 @app.route("/addcategory", methods=['GET','POST'])
 @login_required
 def add_category():
-    if 'email' not in session:
-        flash("Please login first","danger")
-        return redirect(url_for("login"))
     if request.method == "POST":
         get_category = request.form.get("category")
         category = Category(name=get_category)
@@ -79,12 +111,6 @@ def add_product():
         stock = request.form.get("stock")
         colours = request.form.get("colours")
         description = request.form.get("description")
-        """name = form.name.data
-        price = request.form.get("price")
-        discount = form.discount.data
-        stock = form.stock.data
-        colours = form.colours.data
-        description = form.description.data"""
         brand = request.form.get("brand")
         category = request.form.get("category")
 
@@ -125,12 +151,47 @@ def update_product(id):
         product.name = form.name.data
         product.price = form.price.data
         product.discount = form.discount.data
+        product.brand_id = brand
+        product.category_id = category
         product.stock = form.stock.data
         product.colours = form.colours.data
         product.description = form.description.data
+        
+        image_1 = request.files.get("image_1")
+        path1 = os.path.join("shop", "static", "uploads", image_1.filename)
+        if request.files.get('image_1'):
+            try:
+                os.unlink(os.path.join(current_app.root_path, "static/uploads/" + product.image_1))
+                image_1.save(path1)
+                product.image_1 = os.path.join("shop", "static", "uploads", image_1.filename)
+            except:
+                
+                path1 = os.path.join("shop", "static", "uploads", image_1.filename)
+
+        image_2 = request.files.get("image_2")
+        path2 = os.path.join("shop", "static", "uploads", image_2.filename)
+        if request.files.get('image_2'):
+            try:
+                os.unlink(os.path.join(current_app.root_path, "static/uploads/" + product.image_2))
+                image_2.save(path2)
+                product.image_2 = os.path.join("shop", "static", "uploads", image_2.filename)
+            except:            
+                path2 = os.path.join("shop", "static", "uploads", image_2.filename)
+
+        image_3 = request.files.get("image_3")
+        path3 = os.path.join("shop", "static", "uploads", image_3.filename)
+        if request.files.get('image_3'):
+            try:
+                os.unlink(os.path.join(current_app.root_path, "static/uploads/" + product.image_3))
+                image_3.save(path3)
+                product.image_1 = os.path.join("shop", "static", "uploads", image_3.filename)
+            except:
+                    
+                path3 = os.path.join("shop", "static", "uploads", image_3.filename)
+
         db.session.commit()
         flash("Product updated", "success")
-        return redirect("admin")
+        return redirect(url_for("admin"))
     form.name.data = product.name
     form.price.data = product.price
     form.discount.data = product.discount
@@ -139,3 +200,51 @@ def update_product(id):
     form.description.data = product.description
 
     return render_template("products/updateproduct.html", form=form, brands=brands, categories=categories, product=product)
+
+@app.route("/deletebrand/<int:id>", methods=["POST"])
+@login_required
+def delete_brand(id):
+    brand = Brand.query.get_or_404(id)
+    if request.method == "POST":
+        db.session.delete(brand)
+        db.session.commit()
+        flash(f"The brand {brand.name} was deleted from your database", "success")
+        return redirect(url_for("brands"))
+    else:
+        flash("There was a problem deleting this brand", "warning")
+        return redirect(url_for("admin"))
+
+
+@app.route("/deletecategory/<int:id>", methods=["POST"])
+@login_required
+def delete_category(id):
+    category = Category.query.get_or_404(id)
+    if request.method == "POST":
+        db.session.delete(category)
+        db.session.commit()
+        flash(f"The category {category.name} was deleted from your database", "success")
+        return redirect(url_for("categories"))
+    else:
+        flash("There was a problem deleting this category", "warning")
+        return redirect(url_for("admin"))
+
+@app.route("/deleteproduct/<int:id>", methods=["POST"])
+@login_required
+def delete_product(id):
+    product = Addproduct.query.get_or_404(id)
+    if request.method == "POST":
+        if request.files.get('image_1', 'image_2', 'image_3'):
+            try:
+                os.unlink(os.path.join(current_app.root_path, "static/uploads/" + product.image_1))
+                os.unlink(os.path.join(current_app.root_path, "static/uploads/" + product.image_2))
+                os.unlink(os.path.join(current_app.root_path, "static/uploads/" + product.image_3))
+            except Exception  as e:
+                print(e)
+
+        db.session.delete(product)
+        db.session.commit()
+        flash(f"The product {product.name} was deleted from your database", "success")
+        return redirect(url_for("admin"))
+    else:
+        flash("There was a problem deleting this product", "warning")
+        return redirect(url_for("admin"))

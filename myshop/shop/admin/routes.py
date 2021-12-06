@@ -8,13 +8,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from shop.products.models import Addproduct, Brand, Category
 import os
 
-@app.route("/")
 @app.route("/admin")
 @login_required
 def admin():
-    if 'email' not in session:
-        flash("Please login first","danger")
-        return redirect(url_for("login"))
     products = Addproduct.query.all()
     return render_template("admin/admin.html", products=products)
 
