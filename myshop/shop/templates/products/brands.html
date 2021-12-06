@@ -18,7 +18,19 @@ Brand
         <p class="text-center">Price: #{{b.price}}</p>
       </div>
       <div class="card-footer">
-        <a href="{{url_for('single_page', id= b.id)}}" class="float-left btn btn-sm btn-outline-primary">Details</a> <a href="#" class="float-right btn btn-sm btn-outline-warning">Add to cart</a>
+        <a href="{{url_for('single_page', id= b.id)}}" class="float-left btn btn-sm btn-outline-primary">Details</a>
+        <form action="{{url_for('AddCart')}}" method="POST">
+          <input type="hidden" name="b_id" value="{{b.id}}">
+          <button type="submit" class="btn btn-sm btn-outline-warning float-right">Add cart</button>
+          <input type="hidden" name="quantity" id="" value="1" min="1" max="{{b.stock}}">
+          {% set colours = b.colours.split(',') %}
+          <select name="colours" id="" style="visibility: hidden;">
+              {% for colour in colours %}
+                  {% set col = colour.split(':') %}
+                  <option value="{{col[0]}}">{{col[0]|capitalize}}</option>
+              {% endfor %}
+          </select>
+        </form>
       </div>
     </div>
   </div>

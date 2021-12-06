@@ -16,14 +16,30 @@
             {% if product.discount > 0 %}
             <p>{{ product.discount }}% discount</p>
             {% endif %}
+            <hr>
             <b>Product Description</b>
             <p>{{ product.description }}</p>
-            <a href="" class="btn btn-outline-warning"> Add to cart</a>
+            <hr>
+            <form action="{{url_for('AddCart')}}" method="POST">
+                <input type="hidden" name="product_id" value="{{product.id}}">
+                <button type="submit" class="btn btn-sm btn-outline-warning">Add cart</button>
+                <label for="">Quantity</label>
+                <input type="number" name="quantity" id="" value="1" min="1" max="{{product.stock}}">
+                {% set colours = product.colours.split(',') %}
+                <label for="colours">Colours: </label>
+                <select name="colours" id="">
+                    {% for colour in colours %}
+                        {% set col = colour.split(':') %}
+                        <option value="{{col[0]}}">{{col[0]|capitalize}}</option>
+                    {% endfor %}
+                </select>
+            </form>
         </div>
     </div>
     <br>
     <div class="row">
         <div class="col-md-12">
+            <hr>
             <img src="{{url_for('static', filename='uploads/' + product.image_1)}}" alt="" width="120" height="120">
             <img src="{{url_for('static', filename='uploads/' + product.image_2)}}" alt="" width="120" height="120">
             <img src="{{url_for('static', filename='uploads/' + product.image_3)}}" alt="" width="120" height="120">
