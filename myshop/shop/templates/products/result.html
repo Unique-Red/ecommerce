@@ -1,0 +1,41 @@
+{% extends "products/index.html" %}
+{% block title %}
+Result
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row">
+    
+      {% for product in products %}
+      <div class="col-md-3 mt-3">
+          <div class="card">
+              <div class="card-body">
+                  <img src="{{url_for('static', filename='uploads/' + product.image_1)}}" alt="{{product.name}}" class="card-img-top" height="200">
+                    {% if product.discount > 0 %}
+                    <p style="color: whitesmoke; font-weight: 500; text-shadow: 0 0 5px red; color: whitesmoke; position: absolute; top: 20%; left: 20%;">{{ product.discount}}% discount</p>
+                    {% endif %}
+                  <h5 class="text-center">{{product.name}}</h5>
+                  <p class="text-center">Price: #{{product.price}}</p>
+              </div>
+              <div class="card-footer">
+                  <a href="{{url_for('single_page', id= product.id)}}" class="float-none btn btn-sm btn-outline-primary">Details</a>
+                  <form action="{{url_for('AddCart')}}" method="POST">
+                    <input type="hidden" name="product_id" value="{{product.id}}">
+                    <button type="submit" class="btn btn-sm btn-outline-warning float-sm-end">Add cart</button>
+                    <input type="hidden" name="quantity" id="" value="1" min="1" max="{{product.stock}}">
+                    {% set colours = product.colours.split(',') %}
+                    <select name="colours" id="" style="visibility: hidden;">
+                        {% for colour in colours %}
+                            {% set col = colour.split(':') %}
+                            <option value="{{col[0]}}">{{col[0]|capitalize}}</option>
+                        {% endfor %}
+                    </select>
+                </form>
+              </div>
+          </div>
+      </div>
+      {% endfor %}
+    </div>
+    
+</div>
+{% endblock %}
