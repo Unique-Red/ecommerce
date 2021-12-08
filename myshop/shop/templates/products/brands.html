@@ -21,7 +21,7 @@ Brand
         <a href="{{url_for('single_page', id= b.id)}}" class="float-left btn btn-sm btn-outline-primary">Details</a>
         <form action="{{url_for('AddCart')}}" method="POST">
           <input type="hidden" name="b_id" value="{{b.id}}">
-          <button type="submit" class="btn btn-sm btn-outline-warning float-right">Add cart</button>
+          <button type="submit" class="btn btn-sm btn-outline-warning float-sm-end">Add cart</button>
           <input type="hidden" name="quantity" id="" value="1" min="1" max="{{b.stock}}">
           {% set colours = b.colours.split(',') %}
           <select name="colours" id="" style="visibility: hidden;">

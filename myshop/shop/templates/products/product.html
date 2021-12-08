@@ -17,10 +17,10 @@ All Products
                   <p class="text-center">Price: #{{product.price}}</p>
               </div>
               <div class="card-footer">
-                  <a href="{{url_for('single_page', id= product.id)}}" class="float-left btn btn-sm btn-outline-primary">Details</a>
+                  <a href="{{url_for('single_page', id= product.id)}}" class="float-none btn btn-sm btn-outline-primary">Details</a>
                   <form action="{{url_for('AddCart')}}" method="POST">
                     <input type="hidden" name="product_id" value="{{product.id}}">
-                    <button type="submit" class="btn btn-sm btn-outline-warning float-right">Add cart</button>
+                    <button type="submit" class="btn btn-sm btn-outline-warning float-sm-end">Add cart</button>
                     <input type="hidden" name="quantity" id="" value="1" min="1" max="{{product.stock}}">
                     {% set colours = product.colours.split(',') %}
                     <select name="colours" id="" style="visibility: hidden;">
