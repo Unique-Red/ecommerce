@@ -45,7 +45,7 @@ def login():
     return render_template ("admin/login.html", form=form)
 
 
-@app.route("/register", methods=["GET", "POST"])
+@app.route("/letstryhavingjargonshere", methods=["GET", "POST"])
 def register():
     form = RegistrationForm(request.form)
     if request.method == "POST":
