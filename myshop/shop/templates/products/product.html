@@ -4,6 +4,7 @@ All Products
 {% endblock %}
 {% block content %}
 <div class="container">
+    {% include '_messages.html' %}
     <div class="row">
       {% for product in products.items %}
       <div class="col-md-3 mt-3">
@@ -18,6 +19,7 @@ All Products
               </div>
               <div class="card-footer">
                   <a href="{{url_for('single_page', id= product.id)}}" class="float-none btn btn-sm btn-outline-primary">Details</a>
+                  
                   <form action="{{url_for('AddCart')}}" method="POST">
                     <input type="hidden" name="product_id" value="{{product.id}}">
                     <button type="submit" class="btn btn-sm btn-outline-warning float-sm-end">Add cart</button>
@@ -30,6 +32,7 @@ All Products
                         {% endfor %}
                     </select>
                 </form>
+                
               </div>
           </div>
       </div>

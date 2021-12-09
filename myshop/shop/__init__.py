@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, login_manager
 import os
+from flask_msearch import Search
 
 
 app = Flask(__name__)
@@ -9,7 +10,8 @@ app.config['SECRET_KEY'] = "helloworld"
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///myshop.db'
 
 db = SQLAlchemy(app)
-
+search = Search()
+search.init_app(app)
 
 from shop.admin.models import User
 
@@ -24,3 +26,5 @@ def load_user(id):
 
 from .admin import routes
 from .products import routes
+from .carts import carts
+from .customers import routes
