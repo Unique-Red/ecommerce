@@ -33,7 +33,6 @@ def single_page(id):
     product = Addproduct.query.get_or_404(id)
     return render_template("products/singlepage.html", product=product, brands=brands(), categories=categories())
 
-
 @app.route("/brand/<int:id>")
 def get_brand(id):
     page = request.args.get("page", 1, type=int)
@@ -189,7 +188,6 @@ def update_product(id):
                 image_3.save(path3)
                 product.image_1 = os.path.join("shop", "static", "uploads", image_3.filename)
             except:
-                    
                 path3 = os.path.join("shop", "static", "uploads", image_3.filename)
 
         db.session.commit()
