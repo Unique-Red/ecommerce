@@ -15,7 +15,6 @@ search.init_app(app)
 
 from shop.admin.models import User
 
-
 login_manager = LoginManager()
 login_manager.login_view = 'login'
 login_manager.init_app(app)
