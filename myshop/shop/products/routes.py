@@ -19,7 +19,7 @@ def categories():
 @app.route("/")
 def home():
     page = request.args.get("page", 1, type=int)
-    products = Addproduct.query.filter(Addproduct.stock > 0).order_by(Addproduct.id.desc()). paginate(page=page, per_page=4)
+    products = Addproduct.query.filter(Addproduct.stock > 0).order_by(Addproduct.id.desc()). paginate(page=page, per_page=8)
     return render_template("products/product.html", products=products, brands=brands(), categories=categories())
 
 @app.route("/result")
@@ -32,6 +32,7 @@ def result():
 def single_page(id):
     product = Addproduct.query.get_or_404(id)
     return render_template("products/singlepage.html", product=product, brands=brands(), categories=categories())
+
 
 @app.route("/brand/<int:id>")
 def get_brand(id):
@@ -188,6 +189,7 @@ def update_product(id):
                 image_3.save(path3)
                 product.image_1 = os.path.join("shop", "static", "uploads", image_3.filename)
             except:
+                    
                 path3 = os.path.join("shop", "static", "uploads", image_3.filename)
 
         db.session.commit()

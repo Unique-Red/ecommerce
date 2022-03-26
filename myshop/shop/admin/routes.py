@@ -1,6 +1,6 @@
 from flask import render_template, session, request, redirect, url_for, flash
 
-from shop import app, db 
+from shop import app, db, bcrypt
 from .forms import RegistrationForm, LoginForm
 from .models import User
 from flask_login import login_user, logout_user, login_required
@@ -28,7 +28,16 @@ def categories():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     form = LoginForm(request.form)
-    if request.method == "POST":
+    if request.method == "POST" and form.validate():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user and bcrypt.check_password_hash(user.password, form.password.data):
+            session['email.data'] = form.email.data
+            flash("Logged in", "success")
+            return redirect(request.args.get(next) or url_for('admin'))
+        else:
+            flash("Please try again", "danger")
+
+    """if request.method == "POST":
         email = request.form.get("email")
         password = request.form.get("password")
 
@@ -41,14 +50,21 @@ def login():
                 flash("Password is incorrect", "danger") 
         else:
             flash("Email does not exist", "danger")
-
+"""
     return render_template ("admin/login.html", form=form)
 
 
 @app.route("/letstryhavingjargonshere", methods=["GET", "POST"])
 def register():
     form = RegistrationForm(request.form)
-    if request.method == "POST":
+    if request.method == "POST" and form.validate():
+        hash_password = bcrypt.generate_password_hash(form.password.data)
+
+        user = User(name=form.name.data,username=form.username.data,email=form.email.data,password=form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        return redirect(url_for('admin'))
+    """if request.method == "POST":
         name = request.form.get("name")
         username = request.form.get("username")
         email = request.form.get("email")
@@ -70,7 +86,7 @@ def register():
             db.session.commit()
 
             return redirect(url_for('admin'))
-
+"""
     return render_template ("admin/register.html", form=form)
 
 
